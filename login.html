@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | Heritage Tourism</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#1e3c72,#2a5298,#6a11cb,#2575fc);
+  background-size:400% 400%;
+  animation:gradientMove 12s ease infinite;
+  overflow:hidden;
+}
+
+@keyframes gradientMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+body::before,
+body::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  background:rgba(255,255,255,0.1);
+}
+
+body::before{
+  width:300px;
+  height:300px;
+  top:-100px;
+  left:-100px;
+}
+
+body::after{
+  width:400px;
+  height:400px;
+  bottom:-150px;
+  right:-150px;
+}
+
+.login-card{
+  width:380px;
+  padding:40px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(25px);
+  box-shadow:0 15px 35px rgba(0,0,0,0.4);
+  text-align:center;
+  color:#fff;
+}
+
+.login-card h2{
+  margin-bottom:30px;
+  font-weight:600;
+}
+
+.input-box{
+  position:relative;
+  margin-bottom:20px;
+}
+
+.input-box input{
+  width:100%;
+  padding:12px 40px;
+  border:none;
+  outline:none;
+  border-radius:30px;
+  background:rgba(255,255,255,0.2);
+  color:#fff;
+}
+
+.input-box input::placeholder{
+  color:#eee;
+}
+
+.input-box i{
+  position:absolute;
+  top:50%;
+  left:15px;
+  transform:translateY(-50%);
+  color:#fff;
+}
+
+.toggle-password{
+  position:absolute;
+  right:15px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+}
+
+.login-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(45deg,#00c6ff,#0072ff);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.login-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 20px rgba(0,0,0,0.3);
+}
+
+.extra-links{
+  margin-top:20px;
+  font-size:13px;
+}
+
+.extra-links a{
+  color:#fff;
+  text-decoration:none;
+}
+
+.extra-links a:hover{
+  text-decoration:underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-card">
+  <h2>Welcome Back</h2>
+
+  <form id="loginForm">
+
+    <div class="input-box">
+      <i class="fa fa-envelope"></i>
+      <input type="email" id="email" placeholder="Email Address" required>
+    </div>
+
+    <div class="input-box">
+      <i class="fa fa-lock"></i>
+      <input type="password" id="password" placeholder="Password" required>
+      <i class="fa fa-eye toggle-password" onclick="togglePassword()"></i>
+    </div>
+
+    <button type="submit" class="login-btn">Login</button>
+
+  </form>
+
+  <div class="extra-links">
+    <p>New user? <a href="register.html">Create Account</a></p>
+  </div>
+</div>
+
+<script>
+function togglePassword(){
+  const pass = document.getElementById("password");
+  if(pass.type === "password"){
+    pass.type = "text";
+  } else {
+    pass.type = "password";
+  }
+}
+
+document.getElementById("loginForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    const storedUser = JSON.parse(localStorage.getItem("heritageUser"));
+
+    if(!storedUser){
+        alert("No account found! Please register first.");
+        return;
+    }
+
+    if(email === storedUser.email && password === storedUser.password){
+        
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("loggedInUser", storedUser.name);
+
+        alert("Login Successful ✅");
+
+        window.location.href = "./index.html";
+
+    } else {
+        alert("Invalid Email or Password ❌");
+    }
+});
+</script>
+
+</body>
+</html>

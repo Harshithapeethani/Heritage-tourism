@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Place Details</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+
+<style>
+  body{
+  background:#f4f6f9;
+  font-family:"Segoe UI",sans-serif;
+
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+
+
+/* HERO */
+.hero-video{position:relative;height:100vh;overflow:hidden}
+.hero-video video{width:100%;height:100%;object-fit:cover}
+.hero-overlay{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0.5);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;text-align:center;
+}
+
+/* CARD */
+.info-card{
+  background:#fff;border-radius:18px;padding:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,.1);
+  transition:.3s
+}
+.info-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 0 18px rgba(255,193,7,.6)
+}
+
+/* GRID */
+.grid-flex{display:flex;gap:14px;flex-wrap:wrap}
+.grid-item{text-align:center;width:120px}
+.grid-item img{
+  width:100%;height:90px;object-fit:cover;border-radius:12px
+}
+
+/* TRANSPORT */
+.transport-btn{
+  width:100%;padding:14px;border-radius:14px;
+  font-weight:600;border:none;margin-bottom:12px
+}
+.car{background:#198754;color:#fff}
+.bike{background:#ffc107;color:#000}
+
+/* MAP */
+.map-frame{
+  width:100%;height:260px;border:none;border-radius:16px
+}
+
+/* Nearby images */
+.nearby-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.nearby-item img{
+  width:55px;
+  height:45px;
+  object-fit:cover;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+/* -------- Nearby Areas with Images -------- */
+#nearbyList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nearby-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+/* 🔥 IMAGE SIZE INCREASE HERE */
+.nearby-item img {
+  width: 90px;        /* earlier ~40–50px untadhi */
+  height: 70px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+
+/* Hover zoom effect */
+.nearby-item img:hover {
+  transform: scale(1.1);
+}
+
+.nearby-item span {
+  font-size: 16px;
+  font-weight: 500;
+}
+.nearby-item img {
+  width: 110px;
+  height: 85px;
+}
+
+/* Nearby area item */
+.nearby-item{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:12px;
+}
+
+.nearby-item img{
+  width:90px;        /* 🔥 image size increase */
+  height:70px;
+  object-fit:cover;
+  border-radius:12px;
+  box-shadow:0 6px 15px rgba(0,0,0,0.2);
+  transition:0.3s;
+}
+
+.nearby-item img:hover{
+  transform:scale(1.08);
+}
+/* Shopping animation */
+.shopping-card{
+  position:relative;
+  overflow:hidden;
+}
+
+.shopping-girl{
+  position:absolute;
+  bottom:-10px;
+  right:-10px;
+  width:90px;
+  animation: walk 4s infinite alternate ease-in-out;
+}
+
+@keyframes walk{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-25px); }
+}
+
+.shopping-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 15px 30px rgba(0,0,0,0.2);
+}
+
+/* ===== SMOOTH PAGE TRANSITION ===== */
+body{
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity .4s ease, transform .4s ease;
+}
+
+body.page-loaded{
+  opacity:1;
+  transform:translateY(0);
+}
+
+
+</style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html">🏛 Heritage Tourism</a>
+  </div>
+</nav>
+
+<section class="hero-video">
+  <video autoplay muted loop id="placeVideo"></video>
+  <div class="hero-overlay">
+    <div>
+      <h1 id="placeTitle"></h1>
+      <p id="placeTagline"></p>
+    </div>
+  </div>
+</section>
+
+<div class="container my-5">
+
+<!-- ABOUT -->
+
+
+<div class="info-card mb-4 position-relative">
+
+  <!-- ❤️ Small Wishlist Button -->
+  <form action="/add-wishlist" method="POST" 
+        style="position:absolute; top:15px; right:15px;">
+        
+    <input type="hidden" name="place" id="wishlistPlace">
+<input type="hidden" name="location" id="wishlistLocation">
+    <button type="submit" style="
+        background:#ffc107;
+        border:none;
+        width:40px;
+        height:40px;
+        border-radius:50%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        box-shadow:0 4px 12px rgba(255,193,7,.5);
+        transition:.3s;
+        font-size:18px;
+    ">
+        ❤️
+    </button>
+  </form>
+
+  <h4>📖 About</h4>
+  <p id="placeAbout"></p>
+
+</div>
+
+<!-- GUIDES / HOTELS / HOSPITALS -->
+<div class="row g-4 mb-4">
+  <div class="col-md-4"><div class="info-card"><h5>👤 Guides</h5><ul id="guidesList"></ul></div></div>
+  <div class="col-md-4"><div class="info-card"><h5>🏨 Hotels</h5><ul id="hotelsList"></ul></div></div>
+  <div class="col-md-4"><div class="info-card"><h5>🏥 Hospitals</h5><ul id="hospitalsList"></ul></div></div>
+</div>
+
+<!-- MAP + NEARBY -->
+<div class="row g-4 mb-4">
+  <div class="col-md-6">
+    <div class="info-card">
+      <h5>📍 Location</h5>
+      <iframe id="mapFrame" class="map-frame" loading="lazy"></iframe>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="info-card">
+      <h5>📌 Nearby Areas</h5>
+      <div id="nearbyList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOD + SHOPPING -->
+<div class="row g-4 mb-4">
+  <div class="col-md-6">
+    <div class="info-card">
+      <h5>🍽 Famous Food</h5>
+      <div id="foodGrid" class="grid-flex"></div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="info-card shopping-card">
+  <h5>🛍 Shopping</h5>
+  <ul id="shoppingList"></ul>
+
+  <!-- girl animation -->
+  <img src="images/shopping-girl.png" class="shopping-girl">
+</div>
+  </div>
+</div>
+
+<!-- TRANSPORT -->
+<div class="info-card mb-4">
+  <h5>🚕 Book Transport</h5>
+
+  <button id="carBtn" class="transport-btn car">
+    🚗 Book Car – ₹2500/day
+  </button>
+
+  <button id="bikeBtn" class="transport-btn bike">
+    🏍 Book Bike – ₹800/day
+  </button>
+</div>
+
+<!-- REVIEW + TIPS WRAPPER -->
+<div class="review-tips-wrapper">
+ 
+    <div class="reviews-section">
+  <h3>⭐ Reviews</h3>
+  <div id="reviews"></div>
+</div>
+
+<div class="tips-section">
+  <h3>💡 Travel Tips</h3>
+  <ul id="tipsList"></ul>
+</div>
+  </div>
+
+
+<!-- ACTION BUTTONS -->
+<div class="action-buttons">
+  <a id="viewHotelsBtn" class="view-hotels-btn">View Hotels</a>
+
+  <button class="back-btn" onclick="history.back()">
+    ← Back
+  </button>
+</div>
+
+<!-- HTML CONTENT ABOVE -->
+</div>
+
+<!-- 🔽 IDHI LAST PART -->
+<script src="data.js"></script>
+
+<script>
+/* ===============================
+   READ PLACE FROM URL
+================================ */
+const params = new URLSearchParams(window.location.search);
+const placeName = params.get("name"); // PLACE NAME ONLY
+
+if (!placeName || !PLACES_DATA[placeName]) {
+  alert("Place not found");
+  window.location.href = "heritage.html";
+}
+
+const p = PLACES_DATA[placeName];
+
+document.getElementById("wishlistPlace").value = placeName;
+document.getElementById("wishlistLocation").value = p.map;
+
+
+/* ===============================
+   SET BASIC DETAILS
+================================ */
+document.getElementById("placeTitle").innerText   = placeName;
+document.getElementById("placeTagline").innerText = p.tagline;
+document.getElementById("placeAbout").innerText   = p.about;
+
+/* ===============================
+   VIDEO
+================================ */
+const placeVideo = document.getElementById("placeVideo");
+if (placeVideo) {
+  placeVideo.innerHTML = `<source src="${p.video}" type="video/mp4">`;
+}
+
+/* ===============================
+   LISTS
+================================ */
+document.getElementById("guidesList").innerHTML =
+  p.guides.map(g => `<li>${g}</li>`).join("");
+
+document.getElementById("hospitalsList").innerHTML =
+  p.hospitals.map(h => `<li>${h}</li>`).join("");
+
+document.getElementById("hotelsList").innerHTML =
+  (window.HOTELS_DATA && HOTELS_DATA[placeName])
+    ? HOTELS_DATA[placeName].map(h => `<li>${h.name} – ₹${h.price}</li>`).join("")
+    : "<li>No hotels listed</li>";
+
+/* ===============================
+   MAP
+================================ */
+document.getElementById("mapFrame").src = p.map;
+
+/* ===============================
+   NEARBY
+================================ */
+const nearbyList = document.getElementById("nearbyList");
+nearbyList.innerHTML = "";
+p.nearby.forEach(n => {
+  nearbyList.innerHTML += `
+    <div class="nearby-item">
+      <img src="${n.image}">
+      <span>${n.name}</span>
+    </div>`;
+});
+
+/* ===============================
+   FOOD
+================================ */
+document.getElementById("foodGrid").innerHTML =
+  p.food.map(f => `
+    <div class="grid-item">
+      <img src="${f.image}">
+      <p>${f.name}</p>
+    </div>`).join("");
+
+/* ===============================
+   SHOPPING
+================================ */
+document.getElementById("shoppingList").innerHTML =
+  p.shopping.map(s => `<li>${s}</li>`).join("");
+
+/* ===============================
+   TRANSPORT
+================================ */
+document.getElementById("carBtn").innerText =
+  `🚗 Book Car – ₹${p.transport.car}/day`;
+
+document.getElementById("bikeBtn").innerText =
+  `🏍 Book Bike – ₹${p.transport.bike}/day`;
+// ✅ TRANSPORT BUTTON CLICK REDIRECT
+document.getElementById("carBtn").onclick = function () {
+  window.location.href =
+    "car-booking.html" +
+    "?place=" + encodeURIComponent(placeName) +
+    "&type=car" +
+    "&price=" + p.transport.car;
+};
+
+document.getElementById("bikeBtn").onclick = function () {
+  window.location.href =
+    "car-booking.html" +
+    "?place=" + encodeURIComponent(placeName) +
+    "&type=bike" +
+    "&price=" + p.transport.bike;
+};
+/* ===============================
+   REVIEWS
+================================ */
+document.getElementById("reviews").innerHTML =
+  p.reviews.map(r => `<p>${r}</p>`).join("");
+
+/* ===============================
+   TIPS
+================================ */
+const tipsList = document.getElementById("tipsList");
+tipsList.innerHTML = "";
+p.tips.forEach(t => tipsList.innerHTML += `<li>${t}</li>`);
+
+/* ===============================
+   VIEW HOTELS
+================================ */
+document.getElementById("viewHotelsBtn").onclick = function(e){
+  e.preventDefault();
+
+  // fade out effect
+  document.body.style.opacity = "0";
+  document.body.style.transform = "translateY(10px)";
+
+  setTimeout(() => {
+    window.location.href =
+      "hotels.html?place=" + encodeURIComponent(placeName);
+  }, 300);
+};
+
+/* ===============================
+   👉 PAYMENT REDIRECT (FINAL FIX)
+================================ */
+function goToPayment(username, email, date, nights) {
+  window.location.href =
+    "payment.html" +
+    "?username=" + encodeURIComponent(username) +
+    "&email=" + encodeURIComponent(email) +
+    "&place=" + encodeURIComponent(placeName) +
+    "&date=" + encodeURIComponent(date) +
+    "&nights=" + encodeURIComponent(nights);
+}
+</script>
+<script>
+window.addEventListener("load", function(){
+  document.body.classList.add("page-loaded");
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Transport Booking | Heritage Tourism</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+  /* ===== LUXURY BACKGROUND ===== */
+body{
+  font-family:'Poppins',sans-serif;
+  background:
+  radial-gradient(circle at top right,#0a0a0a20,transparent 40%),
+  radial-gradient(circle at bottom left,#041452f2,transparent 40%),
+  linear-gradient(135deg,#0f2027,#203a43,#0d084f);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+}
+
+/* ===== GLASS BOOKING CARD ===== */
+.booking-card{
+  width:100%;
+  max-width:780px;
+  background:rgba(47, 10, 78, 0.08);
+  backdrop-filter:blur(25px);
+  border-radius:30px;
+  padding:40px;
+  border:1px solid rgba(174, 63, 248, 0.925);
+  box-shadow:
+    0 40px 120px rgba(0,0,0,0.6),
+    0 0 40px rgba(229, 178, 12, 0.2);
+}
+
+/* ===== HEADER ===== */
+h2{
+  font-weight:700;
+  text-align:center;
+  color:#f5c000;
+}
+.sub{
+  text-align:center;
+  color:#ddd;
+  margin-bottom:28px;
+}
+
+/* ===== SECTIONS ===== */
+.section{
+  background:rgba(12, 12, 28, 0.82);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:18px;
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+/* ===== INPUTS ===== */
+.form-control{
+  border-radius:15px;
+  padding:14px;
+  background:rgba(255,255,255,0.15);
+  border:none;
+  color:white;
+}
+.form-control::placeholder{
+  color:#ccc;
+}
+.form-control:focus{
+  background:rgba(255,255,255,0.2);
+  box-shadow:0 0 0 2px #d3f805;
+}
+
+/* ===== TOTAL ===== */
+.section h5{
+  color:#f5d76e;
+  font-weight:600;
+}
+
+/* ===== PREMIUM BUTTON ===== */
+.confirm-btn{
+  width:100%;
+  background:linear-gradient(135deg,#ebd005,#e7c60c);
+  border:none;
+  color:#0f2027;
+  font-size:18px;
+  font-weight:600;
+  padding:16px;
+  border-radius:50px;
+  transition:.3s;
+  box-shadow:0 20px 40px rgba(212,175,55,0.4);
+}
+.confirm-btn:hover{
+  transform:translateY(-4px);
+  box-shadow:0 30px 60px rgba(212,175,55,0.7);
+}
+
+/* ===== PREMIUM POPUP ===== */
+.success-popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(8px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:10000;
+}
+
+.popup-card{
+  background:linear-gradient(145deg,#ffffff,#f8f8f8);
+  border-radius:30px;
+  padding:40px;
+  width:95%;
+  max-width:480px;
+  text-align:center;
+  box-shadow:
+    0 50px 100px rgba(0,0,0,0.35),
+    0 0 40px rgba(212,175,55,0.4);
+  animation:premiumPop .4s ease;
+}
+
+@keyframes premiumPop{
+  from{transform:scale(.85);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
+
+.driver-avatar{
+  width:85px;
+  height:85px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#d4af37,#f5d76e);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:38px;
+  margin:0 auto 18px;
+  box-shadow:0 20px 40px rgba(212,175,55,0.5);
+}
+
+.driver-info{
+  background:#f3f3f3;
+  border-radius:15px;
+  padding:15px;
+  margin:18px 0;
+}
+
+.popup-card button{
+  background:linear-gradient(135deg,#d4af37,#f5d76e);
+  border:none;
+  padding:12px 30px;
+  border-radius:30px;
+  font-weight:600;
+  color:#fff;
+  box-shadow:0 10px 25px rgba(212,175,55,0.4);
+}
+
+/* ===== DRIVER FLOAT CARD ===== */
+.driver-card{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:320px;
+  max-width:90%;
+  background:white;
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.3);
+  opacity:0;
+  transform:translateY(30px);
+  transition:0.4s ease;
+  z-index:9999;
+}
+.driver-card.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.driver-avatar-img{
+  width:75px;
+  height:75px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid #d4af37;
+  box-shadow:0 10px 20px rgba(212,175,55,0.4);
+}
+
+.status{
+  color:#198754;
+  font-weight:600;
+}
+
+/* ===== MOVING VEHICLE ===== */
+.moving-vehicle{
+  position:fixed;
+  bottom:25px;
+  left:-180px;
+  width:160px;
+  z-index:9998;
+  display:none;
+  animation:drive 4s linear forwards;
+}
+
+@keyframes drive{
+  from{left:-180px;}
+  to{left:110%;}
+}
+
+
+/* ===== FIX DRIVER CARD TEXT ===== */
+
+.driver-card{
+  color:#111 !important;
+}
+
+.driver-card h5{
+  color:#000 !important;
+  font-weight:700;
+}
+
+.driver-card p{
+  color:#333 !important;
+  font-size:14px;
+}
+
+.driver-card b{
+  color:#000 !important;
+}
+
+.status{
+  color:#16a34a !important;
+  font-weight:600;
+}
+/* ===== FIX POPUP TEXT VISIBILITY ===== */
+.popup-card h4{
+  color:#111 !important;
+  font-weight:700;
+  margin-bottom:15px;
+}
+
+.popup-card p{
+  color:#333 !important;
+  font-size:15px;
+}
+
+.driver-info p{
+  color:#111 !important;
+  font-weight:500;
+}
+
+.popup-card button{
+  color:#111 !important;
+}
+
+.driver-card{
+  position:fixed;
+  bottom:40px;
+  right:40px;
+  width:360px;
+  background:linear-gradient(145deg,#ffffff,#f3f3f3);
+  border-radius:25px;
+  padding:20px;
+  display:flex;
+  gap:15px;
+  box-shadow:
+    0 40px 80px rgba(0,0,0,0.35),
+    0 0 30px rgba(212,175,55,0.3);
+  opacity:0;
+  transform:translateY(40px);
+  transition:all .5s ease;
+  z-index:9999;
+}
+
+.track-btn{
+  margin-top:10px;
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:25px;
+  background:linear-gradient(135deg,#0ea5e9,#0284c7);
+  color:white;
+  font-weight:600;
+  transition:0.3s;
+}
+
+.track-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);
+}
+
+
+@media(max-width:768px){
+  .driver-card{
+    left:50%;
+    right:auto;
+    transform:translate(-50%,30px);
+    width:95%;
+  }
+}
+
+.track-btn{
+  width:100%;
+  margin-top:10px;
+  background:linear-gradient(135deg,#007bff,#00c6ff);
+  border:none;
+  color:white;
+  padding:10px;
+  border-radius:25px;
+  font-weight:600;
+  transition:0.3s;
+}
+
+.track-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(0,123,255,0.4);
+}
+</style>
+</head>
+
+<body>
+
+<div class="booking-card">
+
+<h2 id="bookingTitle"></h2>
+<p class="sub">Comfortable • Safe • Premium Ride</p>
+
+<div class="section">
+<p><b>📍 Place:</b> <span id="placeName"></span></p>
+<p><b>💰 Base Price:</b> ₹<span id="basePrice"></span> / day</p>
+</div>
+
+<div class="section">
+<input class="form-control mb-3" id="pickup" placeholder="Enter pickup location">
+<input class="form-control" id="drop" placeholder="Enter drop location">
+</div>
+
+<div class="section">
+<div class="form-check">
+<input type="checkbox" id="airport" class="form-check-input">
+<label class="form-check-label">✈ Airport Service (+ ₹500)</label>
+</div>
+</div>
+
+<div class="section">
+<h5>🧾 Total Amount: ₹<span id="total"></span></h5>
+</div>
+
+<button class="confirm-btn" onclick="confirmTransport()">
+Confirm Transport
+</button>
+
+</div>
+
+<!-- POPUP -->
+<div id="successPopup" class="success-popup">
+<div class="popup-card">
+
+<div class="driver-avatar">
+<i id="popupIcon"></i>
+</div>
+
+<h4>Driver is on the way!</h4>
+
+<p><b>Pickup:</b> <span id="popupPickup"></span></p>
+<p><b>Drop:</b> <span id="popupDrop"></span></p>
+
+<div class="driver-info">
+<p><b>Driver:</b> <span id="popupDriver"></span></p>
+<p><b>Vehicle:</b> <span id="popupVehicle"></span></p>
+<p><b>Contact:</b> +91 98765 43210</p>
+</div>
+
+<button onclick="closePopup()">OK</button>
+
+</div>
+</div>
+
+<!-- DRIVER CARD -->
+<!-- DRIVER FLOAT CARD -->
+<!-- DRIVER CARD -->
+<div id="driverCard" class="driver-card">
+  <img src="images/driver.jpg" class="driver-avatar-img">
+
+  <div style="flex:1">
+    <h5 id="vehicleType"></h5>
+
+    <p><b>Name:</b> <span id="driverName"></span></p>
+   <p>⭐ <b><span id="driverRating">4.9</span> Rating</b></p>
+<p>🚘 <b>Vehicle No:</b> <span id="vehicleNumber">TS08 AC 9021</span></p>
+<p>📞 <b>Phone:</b> <span id="driverPhone">+91 98765 43210</span></p>
+    <p><b>Pickup:</b> <span id="driverPickup"></span></p>
+    <p><b>Drop:</b> <span id="driverDrop"></span></p>
+
+    <p class="status">
+      🟢 Arriving in <span id="countdown">30</span> sec
+    </p>
+
+    <!-- 🔥 LIVE TRACK BUTTON -->
+    <button class="track-btn" onclick="goToTracking()">
+      📍 View Live Tracking
+    </button>
+
+  </div>
+</div>
+<img src="images/car.png" id="movingVehicle" class="moving-vehicle">
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const place = params.get("place") || "Unknown Place";
+const basePrice = Number(params.get("price")) || 2500;
+const type = params.get("type") || "car";
+
+document.getElementById("placeName").innerText = place;
+document.getElementById("basePrice").innerText = basePrice;
+document.getElementById("total").innerText = basePrice;
+
+let driverName, vehicleName, icon, image;
+
+if(type==="bike"){
+  driverName="Arjun Reddy";
+  vehicleName="🏍 Premium Bike Ride";
+  icon="fa-solid fa-motorcycle";
+  image="images/bike.png";
+  document.getElementById("bookingTitle").innerHTML='<i class="fa-solid fa-motorcycle"></i> Bike Booking';
+}else{
+  driverName="Ravi Kumar";
+  vehicleName="🚗 Premium AC Car";
+  icon="fa-solid fa-car-side";
+  image="images/car.png";
+  document.getElementById("bookingTitle").innerHTML='<i class="fa-solid fa-car-side"></i> Car Booking';
+}
+
+document.getElementById("movingVehicle").src=image;
+
+function calculateTotal(){
+  let total=basePrice;
+  if(document.getElementById("airport").checked) total+=500;
+  document.getElementById("total").innerText=total;
+}
+document.getElementById("airport").onchange=calculateTotal;
+
+function confirmTransport(){
+
+  const pickup=document.getElementById("pickup").value.trim();
+  const drop=document.getElementById("drop").value.trim();
+
+  if(!pickup || !drop){
+    alert("Enter Pickup & Drop");
+    return;
+  }
+
+  document.getElementById("popupPickup").innerText=pickup;
+  document.getElementById("popupDrop").innerText=drop;
+  document.getElementById("popupDriver").innerText=driverName;
+  document.getElementById("popupVehicle").innerText=vehicleName;
+  document.getElementById("popupIcon").className=icon;
+
+  document.getElementById("driverName").innerText=driverName;
+  document.getElementById("vehicleType").innerText=vehicleName;
+  document.getElementById("driverPickup").innerText=pickup;
+  document.getElementById("driverDrop").innerText=drop;
+
+  /* ===== DYNAMIC DRIVER DATA ===== */
+
+  if(type==="bike"){
+    document.getElementById("driverRating").innerText="4.7";
+    document.getElementById("vehicleNumber").innerText="TS09 BK 4582";
+    document.getElementById("driverPhone").innerText="+91 91234 56789";
+  }else{
+    document.getElementById("driverRating").innerText="4.9";
+    document.getElementById("vehicleNumber").innerText="TS08 AC 9021";
+    document.getElementById("driverPhone").innerText="+91 98765 43210";
+  }
+
+  document.getElementById("movingVehicle").style.display="block";
+
+  setTimeout(()=>{
+    document.getElementById("successPopup").style.display="flex";
+  },1200);
+
+  setTimeout(()=>{
+    document.getElementById("driverCard").classList.add("show");
+    startCountdown();
+  },1600);
+}
+
+function closePopup(){
+  document.getElementById("successPopup").style.display="none";
+}
+function startCountdown(){
+  let time=30;
+  const countdownEl=document.getElementById("countdown");
+
+  const timer=setInterval(()=>{
+    time--;
+    countdownEl.innerText=time;
+
+    if(time<=0){
+      clearInterval(timer);
+      countdownEl.innerText="Arrived!";
+    }
+  },1000);
+}
+function goToTracking(){
+  window.location.href = "live-tracking.html";
+}
+</script>
+
+</body>
+</html>

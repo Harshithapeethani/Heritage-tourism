@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heritage Personality + Packages</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+body{
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#0f172a,#1e293b);
+color:white;
+padding:40px;
+text-align:center;
+transition:0.6s;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+}
+
+h1{
+margin-bottom:20px;
+}
+
+/* QUESTIONS */
+.question-box{display:none;}
+.question-box.active{display:block;}
+
+.option{
+margin:12px;
+padding:12px 22px;
+border:none;
+border-radius:40px;
+cursor:pointer;
+background:#facc15;
+font-weight:bold;
+transition:0.3s;
+}
+.option:hover{
+transform:scale(1.08);
+box-shadow:0 0 20px #facc15;
+}
+
+.progress{
+height:8px;
+background:#334155;
+border-radius:20px;
+margin:30px 0;
+overflow:hidden;
+}
+.progress-bar{
+height:100%;
+width:0%;
+background:#facc15;
+transition:0.4s;
+}
+
+/* PACKAGES */
+.packages{
+display:none;
+margin-top:60px;
+flex-wrap:wrap;
+justify-content:center;
+gap:30px;
+}
+
+.package-card{
+width:260px;
+background:#1e293b;
+padding:25px;
+border-radius:20px;
+transition:0.5s ease;
+position:relative;
+}
+
+.price{
+font-size:22px;
+color:#facc15;
+margin-bottom:15px;
+}
+
+.btn{
+padding:10px 20px;
+background:#facc15;
+color:black;
+border-radius:30px;
+text-decoration:none;
+font-weight:bold;
+display:inline-block;
+}
+
+.highlight{
+box-shadow:0 0 50px gold;
+border:3px solid gold;
+transform:scale(1.08);
+}
+
+.ribbon{
+position:absolute;
+top:15px;
+left:-40px;
+background:gold;
+color:black;
+padding:5px 50px;
+transform:rotate(-45deg);
+font-weight:bold;
+font-size:12px;
+}
+
+.locked{
+filter:blur(4px);
+opacity:0.6;
+pointer-events:none;
+}
+
+.reset-btn{
+margin-top:40px;
+padding:10px 25px;
+background:rgb(65, 193, 74);
+color:white;
+border-radius:30px;
+cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>🧠 Discover Your Heritage Personality</h1>
+
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+
+<!-- QUESTIONS -->
+
+<div class="question-box active" id="q1">
+<h3>What excites you most?</h3>
+<button class="option" onclick="selectAnswer('royal',1)">Grand Palaces 👑</button>
+<button class="option" onclick="selectAnswer('spiritual',1)">Sacred Temples 🛕</button>
+<button class="option" onclick="selectAnswer('nature',1)">Green Landscapes 🌿</button>
+<button class="option" onclick="selectAnswer('history',1)">Ancient Ruins 🏛</button>
+</div>
+
+<div class="question-box" id="q2">
+<h3>Your ideal trip vibe?</h3>
+<button class="option" onclick="selectAnswer('royal',2)">Luxury & Royalty</button>
+<button class="option" onclick="selectAnswer('spiritual',2)">Peace & Devotion</button>
+<button class="option" onclick="selectAnswer('nature',2)">Adventure</button>
+<button class="option" onclick="selectAnswer('history',2)">Learning History</button>
+</div>
+
+<div class="question-box" id="q3">
+<h3>Favorite background?</h3>
+<button class="option" onclick="selectAnswer('royal',3)">Palace Corridor</button>
+<button class="option" onclick="selectAnswer('spiritual',3)">Temple Bells</button>
+<button class="option" onclick="selectAnswer('nature',3)">Waterfalls</button>
+<button class="option" onclick="selectAnswer('history',3)">Fort Walls</button>
+</div>
+
+<!-- PACKAGES -->
+
+<div class="packages" id="packages">
+
+<h2 style="width:100%">🌍 Recommended Tour Packages</h2>
+
+<div class="package-card" id="mysorePackage">
+<h3>Mysore Palace</h3>
+<div class="price" data-base="4999">₹4999</div>
+<a href="#" class="btn">Book Now</a>
+</div>
+
+<div class="package-card" id="tirupatiPackage">
+<h3>Tirupati Temple</h3>
+<div class="price" data-base="3999">₹3999</div>
+<a href="#" class="btn">Book Now</a>
+</div>
+
+<div class="package-card" id="keralaPackage">
+<h3>Kerala Backwaters</h3>
+<div class="price" data-base="6999">₹6999</div>
+<a href="#" class="btn">Book Now</a>
+</div>
+
+<div class="package-card" id="hampiPackage">
+<h3>Hampi Heritage</h3>
+<div class="price" data-base="4599">₹4599</div>
+<a href="#" class="btn">Book Now</a>
+</div>
+
+</div>
+
+<div class="reset-btn" onclick="location.reload()">Restart Test</div>
+
+</div>
+
+<script>
+
+let scores={royal:0,spiritual:0,nature:0,history:0};
+
+function selectAnswer(type,question){
+
+scores[type]++;
+
+document.getElementById("q"+question).classList.remove("active");
+
+let percent=(question/3)*100;
+document.getElementById("progressBar").style.width=percent+"%";
+
+let next=question+1;
+
+if(next<=3){
+document.getElementById("q"+next).classList.add("active");
+}else{
+showPackages();
+}
+}
+
+function showPackages(){
+
+confetti({particleCount:200,spread:120});
+
+document.querySelectorAll(".question-box").forEach(q=>q.style.display="none");
+
+document.getElementById("packages").style.display="flex";
+
+let maxType=Object.keys(scores).reduce((a,b)=>scores[a]>scores[b]?a:b);
+
+let mapping={
+royal:"mysorePackage",
+spiritual:"tirupatiPackage",
+nature:"keralaPackage",
+history:"hampiPackage"
+};
+
+let discountMapping={
+royal:15,
+spiritual:10,
+nature:12,
+history:8
+};
+
+let targetId=mapping[maxType];
+let discount=discountMapping[maxType];
+
+document.querySelectorAll(".package-card").forEach(card=>{
+
+if(card.id===targetId){
+
+card.classList.add("highlight");
+
+let ribbon=document.createElement("div");
+ribbon.className="ribbon";
+ribbon.innerText="Recommended For You";
+card.appendChild(ribbon);
+
+let priceDiv=card.querySelector(".price");
+let base=parseInt(priceDiv.dataset.base);
+let newPrice=Math.floor(base-(base*discount/100));
+priceDiv.innerHTML=`₹${newPrice}<br>
+<small style="text-decoration:line-through;color:gray">₹${base}</small>
+<br>${discount}% OFF`;
+
+card.scrollIntoView({behavior:"smooth",block:"center"});
+
+}else{
+card.classList.add("locked");
+}
+
+});
+
+}
+
+</script>
+
+</body>
+</html>

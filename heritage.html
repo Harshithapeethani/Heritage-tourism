@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Heritage Places</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:#f3f6f9;
+}
+
+/* ================= NAVBAR ================= */
+.navbar{
+  background:rgba(15,23,42,0.85) !important;
+  backdrop-filter:blur(12px);
+  box-shadow:0 8px 30px rgba(0,0,0,0.4);
+}
+
+/* ================= HERO ================= */
+/* ===== ULTRA PREMIUM HERO ===== */
+.premium-hero{
+  position:relative;
+  height:90vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+
+  background:
+    linear-gradient(rgba(157, 13, 167, 0.75), rgba(127, 152, 14, 0.85)),
+    url("images/banner.jpeg");  /* 👈 Change to any HD image */
+  
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+}
+
+/* Cinematic blue overlay */
+.hero-overlay{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 20% 20%, rgba(99,102,241,0.4), transparent 40%),
+             radial-gradient(circle at 80% 70%, rgba(139,92,246,0.4), transparent 40%);
+}
+
+/* ===== GLASS CARD ===== */
+.glass-card{
+  position:relative;
+  z-index:2;
+  padding:60px 80px;
+  border-radius:30px;
+  text-align:center;
+  color:white;
+
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(25px);
+  -webkit-backdrop-filter:blur(25px);
+
+  border:1px solid rgba(255,255,255,0.2);
+  box-shadow:0 25px 80px rgba(0,0,0,0.4);
+
+  animation:float 6s ease-in-out infinite;
+}
+
+/* Floating animation */
+@keyframes float{
+  0%{ transform:translateY(0px);}
+  50%{ transform:translateY(-15px);}
+  100%{ transform:translateY(0px);}
+}
+
+/* Title */
+.glass-card h1{
+  font-size:60px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+/* Subtitle */
+.glass-card p{
+  margin-top:15px;
+  font-size:18px;
+  opacity:0.85;
+}
+
+/* Glow Circles */
+.glow{
+  position:absolute;
+  width:400px;
+  height:400px;
+  border-radius:50%;
+  filter:blur(120px);
+  opacity:0.5;
+}
+
+.glow1{
+  background:#dfe621;
+  top:-100px;
+  left:-100px;
+}
+
+.glow2{
+  background:#8b5cf6;
+  bottom:-120px;
+  right:-120px;
+}
+
+/* Text Styling */
+.hero-center{
+  z-index:2;
+}
+
+.hero-center h1{
+  font-size:60px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.hero-center p{
+  margin-top:15px;
+  font-size:18px;
+  opacity:0.85;
+}
+
+.bg-video{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-2;
+}
+
+/* Dark overlay for readability */
+.overlay{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.6),rgba(0,0,0,0.7));
+  z-index:-1;
+}
+
+/* Content */
+.hero-content{
+  z-index:2;
+  max-width:700px;
+}
+
+.hero-content h1{
+  font-size:60px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.hero-content p{
+  margin-top:15px;
+  font-size:18px;
+  opacity:0.9;
+}
+/* soft glow circles */
+.hero::before{
+  content:"";
+  position:absolute;
+  width:500px;
+  height:500px;
+  background:radial-gradient(circle,rgba(255,255,255,0.15),transparent);
+  top:-150px;
+  right:-150px;
+  border-radius:50%;
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  width:400px;
+  height:400px;
+  background:radial-gradient(circle,rgba(255,255,255,0.12),transparent);
+  bottom:-120px;
+  left:-120px;
+  border-radius:50%;
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+}
+
+.hero h1{
+  font-size:52px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.hero p{
+  margin-top:10px;
+  opacity:0.9;
+  font-size:18px;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.8)),
+    url('images/golconda.jpeg');
+  background-size:cover;
+  background-position:center;
+  filter:brightness(0.8);
+  transform:scale(1.1);
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(18px);
+  padding:50px 80px;
+  border-radius:25px;
+  box-shadow:0 25px 60px rgba(0,0,0,0.6);
+}
+
+.hero h1{
+  font-size:52px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.hero p{
+  opacity:0.85;
+  margin-top:10px;
+}
+
+.hero-content{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(20px);
+  padding:40px 60px;
+  border-radius:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+
+.hero h1{
+  font-size:52px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.hero p{
+  opacity:0.9;
+  margin-top:12px;
+  font-size:18px;
+}
+
+/* ================= CARDS SECTION ================= */
+.section-wrapper{
+  margin-top:0;
+  padding-top:60px;
+}
+
+/* ================= CARDS ================= */
+.place-card{
+  border-radius:20px;
+  overflow:hidden;
+  border:none;
+  transition:0.4s;
+  box-shadow:0 15px 40px rgba(0,0,0,0.08);
+  background:white;
+}
+
+.place-card:hover{
+  transform:translateY(-8px);
+  box-shadow:0 30px 70px rgba(0,0,0,0.18);
+}
+
+.place-card img{
+  height:230px;
+  width:100%;
+  object-fit:cover;
+  transition:0.5s;
+}
+
+.place-card:hover img{
+  transform:scale(1.05);
+}
+
+.card-body{
+  padding:22px;
+}
+
+.btn-modern{
+  background:linear-gradient(135deg,#7d9c0c,#b5cd1e);
+  border:none;
+  border-radius:30px;
+  padding:10px;
+  font-weight:600;
+  transition:0.3s;
+}
+
+.btn-modern:hover{
+  background:linear-gradient(135deg,#9daa0e,#16a34a);
+  transform:scale(1.05);
+}
+
+/* Animation */
+.fade-up{
+  opacity:0;
+  transform:translateY(40px);
+  transition:0.8s;
+}
+
+.fade-up.show{
+  opacity:1;
+  transform:translateY(0);
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark fixed-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html">
+      🏛️ Heritage Tourism
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="premium-hero">
+
+  <div class="hero-overlay"></div>
+
+  <div class="glass-card">
+    <h1 id="heroTitle">Forts Places</h1>
+    <p>Exclusive Heritage Collection • Premium Destinations</p>
+  </div>
+
+</section>
+
+<div class="container section-wrapper py-5">
+  <div class="row g-4" id="placesContainer"></div>
+</div>
+
+<!-- ================= IMAGE DATA ================= -->
+<script>
+const IMAGES_DATA = {
+  telangana: {
+    "Charminar": "images/charminar.jpg",
+    "Warangal Fort": "images/warangal.jpg",
+    "Golconda Fort": "images/golconda.jpeg",
+    "Chowmahalla Palace": "images/chowmahalla.jpg",
+    "Thousand Pillar Temple":"images/thousand pillar.jpeg",
+    "Ramappa Temple": "images/ramappa.jpeg",
+  },
+  tamilnadu: {
+    "Meenakshi Temple": "images/meenakshi.jpg",
+    "Brihadeeswarar Temple": "images/brihadeeswarar.jpg",
+    "Mahabalipuram": "images/mahabalipuram.webp",
+    "Rameswaram Temple":  "images/rameswaram.jpg",
+    "Kanchipuram Temples": "images/kanchipuram.jpg",
+    "Vellore Fort":"images/vellore.jpg",
+  },
+  kerala: {
+    "Padmanabhaswamy Temple": "images/padmanabha.jpg",
+    "Mattancherry Palace": "images/mattancherry.jpeg",
+    "Athirappilly Falls":  "images/athirappilly.jpg",
+    "Alleppey Backwaters":  "images/alleppey.jpg",
+    "Wayanad": "images/wayand.jpg",
+    "Bekal Fort": "images/bekal.jpeg",
+  },
+  karnataka: {
+    "Hampi": "images/hampi.jpg",
+    "Badami Caves": "images/Badami.jpg",
+    "Belur Temple": "images/belur.jpg",
+    "Mysore Palace": "images/mysore.jpg",
+    "Chitradurga Fort":  "images/chitradurga.jpg",
+    "Halebidu Temple":  "images/halebidu.jpg",
+  },
+  andhrapradesh: {
+    "Tirupati Temple": "images/tirupati.jpg",
+    "Amaravati Stupa": "images/amaravati.jpg",
+    "Gandikota Fort": "images/gandikota.jpg",
+    "Lepakshi Temple": "images/lepakshi.jpg",
+    "Araku Valley": "images/araku.jpg",
+    "Undavalli Caves": "images/undavalli.jpg",
+  }
+};
+</script>
+
+<script src="data.js"></script>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const state = params.get("state");
+const category = params.get("category");
+
+const heroTitle = document.getElementById("heroTitle");
+const container = document.getElementById("placesContainer");
+
+let found = false;
+
+if(category){
+  heroTitle.innerText = category + " Places";
+
+  Object.keys(PLACES_DATA).forEach(place => {
+    if(PLACES_DATA[place].category === category){
+      found = true;
+
+      let detectedState = null;
+      Object.keys(IMAGES_DATA).forEach(st=>{
+        if(IMAGES_DATA[st][place]) detectedState = st;
+      });
+
+      const img = detectedState
+        ? IMAGES_DATA[detectedState][place]
+        : "images/default.jpg";
+
+      container.innerHTML += createCard(place,img);
+    }
+  });
+}
+
+else if(state && STATE_DATA[state]){
+  heroTitle.innerText = state.toUpperCase() + " Heritage";
+
+  const places = STATE_DATA[state].places;
+
+  Object.keys(places).forEach(place=>{
+    found = true;
+
+    const img =
+      IMAGES_DATA[state] && IMAGES_DATA[state][place]
+        ? IMAGES_DATA[state][place]
+        : "images/default.jpg";
+
+    container.innerHTML += createCard(place,img);
+  });
+}
+
+if(!found){
+  heroTitle.innerText = "No places found";
+}
+
+function createCard(place,img){
+  return `
+    <div class="col-md-4 fade-up">
+      <div class="card place-card">
+        <img src="${img}" alt="${place}">
+        <div class="card-body text-center">
+          <h5 class="fw-bold">${place}</h5>
+          <a href="place-details.html?name=${encodeURIComponent(place)}"
+             class="btn btn-modern w-100 text-white mt-2">
+             View Details
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+setTimeout(()=>{
+  document.querySelectorAll(".fade-up").forEach((el,i)=>{
+    setTimeout(()=>{ el.classList.add("show"); }, i*150);
+  });
+},300);
+</script>
+
+</body>
+</html>

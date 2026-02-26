@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinematic Heritage Story</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  font-family:'Cinzel', serif;
+  background:black;
+  color:white;
+}
+
+/* VIDEO BACKGROUND */
+.video-bg{
+  position:fixed;
+  right:0;
+  bottom:0;
+  min-width:100%;
+  min-height:100%;
+  z-index:-1;
+  object-fit:cover;
+  filter:brightness(50%);
+}
+
+/* DARK OVERLAY */
+.overlay{
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:linear-gradient(to top,rgba(0,0,0,.8),rgba(0,0,0,.3));
+}
+
+/* STORY CONTAINER */
+.story-container{
+  position:absolute;
+  bottom:15%;
+  width:100%;
+  text-align:center;
+  padding:0 20px;
+}
+
+.story-title{
+  font-size:40px;
+  letter-spacing:3px;
+  margin-bottom:20px;
+  text-shadow:0 0 20px gold;
+}
+
+.story-text{
+  font-size:22px;
+  max-width:900px;
+  margin:auto;
+  line-height:1.8;
+  min-height:120px;
+}
+
+/* BUTTONS */
+.controls{
+  position:absolute;
+  top:20px;
+  right:20px;
+}
+
+.btn{
+  padding:10px 20px;
+  margin-left:10px;
+  border:none;
+  border-radius:30px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.skip{background:#d4af37;color:black;}
+.replay{background:white;color:black;}
+
+/* FADE ANIMATION */
+.fade-in{
+  animation:fadeIn 2s forwards;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+/* SUBTITLE STYLE */
+.subtitle{
+  position:absolute;
+  bottom:5%;
+  width:100%;
+  text-align:center;
+  font-size:16px;
+  opacity:.8;
+  font-family:Segoe UI;
+}
+/* GOLDEN PARTICLES */
+.particle{
+  position:absolute;
+  width:4px;
+  height:4px;
+  background:gold;
+  border-radius:50%;
+  opacity:.7;
+  animation:float 8s linear infinite;
+}
+
+@keyframes float{
+  from{transform:translateY(100vh);}
+  to{transform:translateY(-10vh);}
+}
+
+/* TITLE ANIMATION */
+.story-title{
+  animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+  from{text-shadow:0 0 10px gold;}
+  to{text-shadow:0 0 30px gold;}
+}
+
+/* Cinematic Zoom */
+.video-bg{
+  animation:zoom 20s infinite alternate;
+}
+
+@keyframes zoom{
+  from{transform:scale(1);}
+  to{transform:scale(1.1);}
+}
+</style>
+</head>
+<body>
+
+<!-- VIDEO BACKGROUND -->
+<video autoplay muted loop playsinline class="video-bg">
+  <source src="videos/heritage-bg.mp4" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
+
+<div class="controls">
+  <button class="btn skip" onclick="skipStory()">Skip</button>
+  <button class="btn replay" onclick="replayStory()">Replay</button>
+</div>
+
+<div class="story-container fade-in">
+  <div class="story-title">Telangana Heritage</div>
+  <div class="story-text" id="storyText"></div>
+</div>
+
+<div class="subtitle">Cinematic Heritage Experience</div>
+
+<script>
+
+const storyLines=[
+"Once upon a time, in the heart of the Deccan plateau...",
+"Rose a magnificent monument that defined history...",
+"Charminar stood tall, witnessing centuries of culture and trade...",
+"Its arches echo stories of kings, artisans, and timeless devotion...",
+"This is not just stone and mortar...",
+"This is living heritage."
+];
+
+let index=0;
+let charIndex=0;
+let currentLine="";
+let typingInterval;
+
+function typeEffect(){
+  if(charIndex < currentLine.length){
+    document.getElementById("storyText").innerHTML += currentLine.charAt(charIndex);
+    charIndex++;
+  }else{
+    clearInterval(typingInterval);
+    setTimeout(nextLine,2000);
+  }
+}
+
+function nextLine(){
+  if(index < storyLines.length){
+    document.getElementById("storyText").innerHTML="";
+    currentLine=storyLines[index];
+    charIndex=0;
+    typingInterval=setInterval(typeEffect,40);
+    index++;
+  }
+}
+
+function skipStory(){
+  document.getElementById("storyText").innerHTML=
+  storyLines.join(" ");
+  clearInterval(typingInterval);
+}
+
+function replayStory(){
+  index=0;
+  nextLine();
+}
+
+nextLine();
+/* Create floating particles */
+for(let i=0;i<40;i++){
+  const p=document.createElement("div");
+  p.className="particle";
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDuration=(5+Math.random()*5)+"s";
+  document.body.appendChild(p);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premium Local Guides</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#1e1e2f,#2a2a4f);
+    color:white;
+}
+
+/* NAVBAR */
+.navbar{
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(10px);
+}
+
+/* HERO */
+.hero{
+    text-align:center;
+    padding:60px 20px 40px;
+}
+
+.place-btn{
+    margin:8px;
+    border-radius:30px;
+    padding:8px 20px;
+    border:none;
+    background:linear-gradient(45deg,#6a11cb,#2575fc);
+    color:white;
+    transition:0.3s;
+}
+.place-btn:hover{
+    transform:scale(1.05);
+    box-shadow:0 5px 15px rgba(0,0,0,0.5);
+}
+
+/* CARD */
+.guide-card{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(15px);
+    border-radius:20px;
+    padding:25px;
+    text-align:center;
+    transition:0.3s;
+}
+.guide-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 15px 35px rgba(0,0,0,0.6);
+}
+
+/* PROFILE */
+.profile{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    background:linear-gradient(45deg,#6a11cb,#2575fc);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    margin:0 auto 15px;
+}
+
+/* RATING */
+.rating{
+    color:#ffc107;
+    margin-bottom:10px;
+}
+
+.price{
+    color:#00ffcc;
+    font-weight:600;
+}
+
+.contact-btn{
+    border-radius:25px;
+    margin:5px;
+}
+
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark">
+  <div class="container">
+    <span class="navbar-brand fw-bold">🏛 Heritage Tourism</span>
+  </div>
+</nav>
+
+<div class="hero">
+    <h2>Explore Trusted Local Experts</h2>
+    <p>Certified | Top Rated | Verified Guides Across South India</p>
+
+    <div>
+        <button class="place-btn" onclick="loadGuides('warangal')">Warangal</button>
+        <button class="place-btn" onclick="loadGuides('hyderabad')">Hyderabad</button>
+        <button class="place-btn" onclick="loadGuides('kerala')">Kerala</button>
+        <button class="place-btn" onclick="loadGuides('karnataka')">Karnataka</button>
+        <button class="place-btn" onclick="loadGuides('tamilnadu')">Tamil Nadu</button>
+        <button class="place-btn" onclick="loadGuides('andhra')">Andhra Pradesh</button>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-4" id="guidesContainer"></div>
+</div>
+
+<script>
+
+const guidesData = {
+
+warangal:[
+ {name:"Ravi Kumar",lang:"Telugu, English",price:"₹1500/day",phone:"7994325694"},
+ {name:"Suresh Reddy",lang:"Telugu, Hindi",price:"₹1300/day",phone:"8123456789"},
+ {name:"Anitha Rao",lang:"English, Telugu",price:"₹1600/day",phone:"9876543210"}
+],
+
+hyderabad:[
+ {name:"Faiz Ahmed",lang:"Hindi, English",price:"₹2000/day",phone:"9000012345"},
+ {name:"Megha Sharma",lang:"English, Telugu",price:"₹1800/day",phone:"9112233445"},
+ {name:"Imran Khan",lang:"Hindi, Urdu",price:"₹2200/day",phone:"9988776655"}
+],
+
+kerala:[
+ {name:"Joseph Mathew",lang:"Malayalam, English",price:"₹1700/day",phone:"9000099999"},
+ {name:"Anu Thomas",lang:"Malayalam, Hindi",price:"₹1500/day",phone:"8000011111"},
+ {name:"Nivin Paul",lang:"English, Malayalam",price:"₹1600/day",phone:"8111122222"}
+],
+
+karnataka:[
+ {name:"Rajesh Gowda",lang:"Kannada, English",price:"₹1400/day",phone:"9444411111"},
+ {name:"Deepa Shetty",lang:"Kannada, Hindi",price:"₹1550/day",phone:"9555522222"},
+ {name:"Manoj Rao",lang:"English, Kannada",price:"₹1650/day",phone:"9666633333"}
+],
+
+tamilnadu:[
+ {name:"Arun Kumar",lang:"Tamil, English",price:"₹1500/day",phone:"9777744444"},
+ {name:"Meena Lakshmi",lang:"Tamil, Hindi",price:"₹1400/day",phone:"9888855555"},
+ {name:"Rahul Iyer",lang:"English, Tamil",price:"₹1750/day",phone:"9999966666"}
+],
+
+andhra:[
+ {name:"Praveen",lang:"Telugu, English",price:"₹1300/day",phone:"7000077777"},
+ {name:"Sowmya",lang:"Telugu, Hindi",price:"₹1450/day",phone:"7111188888"},
+ {name:"Karthik",lang:"English, Telugu",price:"₹1600/day",phone:"7222299999"}
+]
+
+};
+
+function loadGuides(place){
+
+const container = document.getElementById("guidesContainer");
+container.innerHTML="";
+
+guidesData[place].forEach(g=>{
+
+container.innerHTML+=`
+<div class="col-md-4">
+    <div class="guide-card">
+        <div class="profile">${g.name.charAt(0)}</div>
+        <h5>${g.name}</h5>
+        <div class="rating">★★★★★</div>
+        <p><i class="fa fa-language"></i> ${g.lang}</p>
+        <p class="price">${g.price}</p>
+        <p><i class="fa fa-phone"></i> ${g.phone}</p>
+
+        <a href="tel:${g.phone}" class="btn btn-primary contact-btn">
+            <i class="fa fa-phone"></i> Call
+        </a>
+
+        <a href="https://wa.me/91${g.phone}" target="_blank" class="btn btn-success contact-btn">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+    </div>
+</div>
+`;
+
+});
+
+}
+
+// default load
+loadGuides("warangal");
+
+</script>
+
+</body>
+</html>

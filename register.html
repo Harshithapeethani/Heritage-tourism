@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register | Heritage Tourism</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#1e3c72,#2a5298,#6a11cb,#2575fc);
+  background-size:400% 400%;
+  animation:gradientMove 12s ease infinite;
+}
+
+@keyframes gradientMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+.register-card{
+  width:400px;
+  padding:40px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(25px);
+  box-shadow:0 15px 35px rgba(0,0,0,0.4);
+  text-align:center;
+  color:#fff;
+}
+
+.register-card h2{
+  margin-bottom:20px;
+}
+
+.input-box{
+  position:relative;
+  margin-bottom:15px;
+}
+
+.input-box input{
+  width:100%;
+  padding:12px 40px;
+  border:none;
+  outline:none;
+  border-radius:30px;
+  background:rgba(255,255,255,0.2);
+  color:#fff;
+}
+
+.input-box i{
+  position:absolute;
+  top:50%;
+  left:15px;
+  transform:translateY(-50%);
+}
+
+.toggle-password{
+  right:15px;
+  left:auto;
+  cursor:pointer;
+}
+
+.register-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(45deg,#ffcc00,#ff9900);
+  color:#000;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:10px;
+  transition:0.3s;
+}
+
+.register-btn:hover{
+  transform:translateY(-3px);
+}
+
+.success{
+  margin-top:15px;
+  font-size:14px;
+  color:#00ff88;
+  display:none;
+}
+.error{
+  margin-top:10px;
+  font-size:13px;
+  color:#ff6b6b;
+}
+</style>
+</head>
+
+<body>
+
+<div class="register-card">
+  <h2>Create Account</h2>
+
+  <form id="registerForm">
+
+    <div class="input-box">
+      <i class="fa fa-user"></i>
+      <input type="text" id="name" placeholder="Full Name" required>
+    </div>
+
+    <div class="input-box">
+      <i class="fa fa-envelope"></i>
+      <input type="email" id="email" placeholder="Email Address" required>
+    </div>
+
+    <div class="input-box">
+      <i class="fa fa-lock"></i>
+      <input type="password" id="password" placeholder="Password" required>
+      <i class="fa fa-eye toggle-password" onclick="togglePassword('password')"></i>
+    </div>
+
+    <div class="input-box">
+      <i class="fa fa-lock"></i>
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+      <i class="fa fa-eye toggle-password" onclick="togglePassword('confirmPassword')"></i>
+    </div>
+
+    <button type="submit" class="register-btn">Register</button>
+
+    <div class="error" id="errorMsg"></div>
+    <div class="success" id="successMsg">Registration Successful! Redirecting...</div>
+
+  </form>
+
+  <div style="margin-top:15px;font-size:13px;">
+    Already have account? <a href="login.html" style="color:#fff;">Login</a>
+  </div>
+</div>
+
+<script>
+function togglePassword(id){
+  const field = document.getElementById(id);
+  field.type = field.type === "password" ? "text" : "password";
+}
+
+document.getElementById("registerForm").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  const errorMsg = document.getElementById("errorMsg");
+  const successMsg = document.getElementById("successMsg");
+
+  errorMsg.innerText = "";
+
+  if(password !== confirmPassword){
+    errorMsg.innerText = "Passwords do not match!";
+    return;
+  }
+
+  if(password.length < 6){
+    errorMsg.innerText = "Password must be at least 6 characters.";
+    return;
+  }
+
+  const user = {
+    name:name,
+    email:email,
+    password:password
+  };
+
+  localStorage.setItem("heritageUser", JSON.stringify(user));
+
+  successMsg.style.display = "block";
+
+  setTimeout(()=>{
+    window.location.href = "login.html";
+  },1500);
+});
+</script>
+
+</body>
+</html>

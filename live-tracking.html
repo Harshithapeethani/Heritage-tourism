@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Hollywood Pro Live Tracking</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<style>
+
+body{
+  margin:0;
+  background:radial-gradient(circle at top,#0a0a0a,#000);
+  font-family:'Poppins',sans-serif;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  gap:20px;
+}
+
+/* ================= MAP CARD ================= */
+
+.map-card{
+  width:95%;
+  height:65vh;
+  border-radius:40px;
+  overflow:hidden;
+  position:relative;
+  background:rgba(20,20,20,0.6);
+  backdrop-filter:blur(25px);
+  box-shadow:
+    0 0 80px rgba(0,255,255,0.3),
+    0 0 120px rgba(255,215,0,0.2);
+  border:1px solid rgba(0,255,255,0.2);
+}
+
+#map{
+  height:100%;
+  width:100%;
+}
+
+/* ================= DRIVER CARD ================= */
+
+.driver-card{
+  width:95%;
+  max-width:1100px;
+  padding:25px 40px;
+  background:linear-gradient(145deg,#0d1117,#161b22);
+  border-radius:30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:
+    0 20px 80px rgba(0,0,0,0.9),
+    0 0 40px rgba(0,255,255,0.2);
+}
+
+/* LEFT SIDE */
+.left h2{
+  margin:0;
+  font-size:26px;
+  background:linear-gradient(90deg,#00ffff,#ffd700);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.left p{
+  margin:6px 0;
+  color:#ddd;
+}
+
+.status{
+  color:#00ff88;
+  font-weight:600;
+}
+
+/* RIGHT SIDE */
+.right{
+  text-align:right;
+  color:white;
+}
+
+.metric{
+  font-size:18px;
+  color:#00ffff;
+  margin-top:5px;
+}
+
+.rating{
+  color:gold;
+  font-size:22px;
+  font-weight:700;
+}
+
+/* ================= EFFECTS ================= */
+
+.glow-route{
+  filter:drop-shadow(0 0 10px #00ffff);
+}
+
+.car-shadow{
+  filter:
+    drop-shadow(0 10px 15px rgba(0,0,0,0.8))
+    drop-shadow(0 0 20px #00ffff);
+}
+
+.headlight{
+  width:120px;
+  height:120px;
+  background:radial-gradient(circle,rgba(255,255,150,0.8),transparent 70%);
+  position:absolute;
+  pointer-events:none;
+  mix-blend-mode:screen;
+}
+
+/* Rain */
+.rain{
+  position:absolute;
+  width:2px;
+  height:15px;
+  background:rgba(255,255,255,0.4);
+  animation:rain 0.6s linear infinite;
+}
+
+@keyframes rain{
+  from{transform:translateY(-100px);}
+  to{transform:translateY(100vh);}
+}
+
+/* Clouds */
+.cloud{
+  position:absolute;
+  width:300px;
+  height:120px;
+  background:radial-gradient(circle,rgba(255,255,255,0.08),transparent);
+  border-radius:50%;
+  animation:cloudMove 60s linear infinite;
+}
+
+@keyframes cloudMove{
+  from{transform:translateX(-300px);}
+  to{transform:translateX(100vw);}
+}
+
+.leaflet-control-attribution{
+  display:none;
+}
+
+.toggle-btn{
+  margin-top:10px;
+  padding:8px 18px;
+  border-radius:20px;
+  border:none;
+  background:linear-gradient(90deg,#00ffff,#00aaff);
+  color:black;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.toggle-btn:hover{
+  transform:scale(1.05);
+}
+
+
+/* ===== CINEMATIC TOAST ===== */
+
+.arrival-toast{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(0.5);
+  padding:30px 60px;
+  border-radius:25px;
+  background:linear-gradient(135deg,#00ffff,#ffd700);
+  color:black;
+  font-size:22px;
+  font-weight:700;
+  text-align:center;
+  box-shadow:
+    0 0 40px rgba(0,255,255,0.8),
+    0 0 80px rgba(255,215,0,0.6);
+  opacity:0;
+  z-index:9999;
+  transition:all 0.4s ease;
+}
+
+.arrival-toast.show{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
+}
+</style>
+</head>
+
+<body>
+
+<!-- MAP CARD -->
+<div class="map-card">
+  <div id="map"></div>
+  <div class="cloud" style="top:50px;"></div>
+  <div class="cloud" style="top:150px; animation-duration:90s;"></div>
+</div>
+
+<!-- DRIVER CARD -->
+<div class="driver-card">
+  <div class="left">
+    <h2>🚗 Premium AC Car</h2>
+    <p>Driver: Ravi Kumar</p>
+    <p>Vehicle No: TS08 AC 9021</p>
+    <p class="status">🟢 Autopilot Active</p>
+  </div>
+
+  <div class="right">
+    <div class="rating">⭐ 4.9</div>
+    
+    <div class="metric">Distance: <span id="distance">--</span> km</div>
+    <div class="metric">ETA: <span id="eta">--</span> sec</div>
+  </div>
+  <button id="rainToggle" class="toggle-btn">🌧 Rain Mode ON</button>
+</div>
+
+
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+
+var pickup = [17.3850,78.4867];
+var driver = [17.3550,78.4467];
+
+var map = L.map('map',{zoomControl:false}).setView(driver,13);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+  attribution:''
+}).addTo(map);
+
+var carIcon = L.icon({
+  iconUrl:"https://cdn-icons-png.flaticon.com/512/744/744465.png",
+  iconSize:[65,65],
+  className:"car-shadow"
+});
+
+var driverMarker = L.marker(driver,{icon:carIcon}).addTo(map);
+L.marker(pickup).addTo(map);
+
+/* REAL ROAD ROUTE */
+fetch(`https://router.project-osrm.org/route/v1/driving/${driver[1]},${driver[0]};${pickup[1]},${pickup[0]}?overview=full&geometries=geojson`)
+.then(res=>res.json())
+.then(data=>{
+  var coords = data.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);
+  
+  L.polyline(coords,{
+    color:'#00ffff',
+    weight:6,
+    className:'glow-route'
+  }).addTo(map);
+
+  var totalDistance = (data.routes[0].distance/120).toFixed(2);
+  document.getElementById("distance").innerText = totalDistance;
+
+  animateCar(coords);
+});
+
+function animateCar(coords){
+  let i=0;
+  let eta = 30;
+  document.getElementById("eta").innerText = eta;
+
+  var interval = setInterval(()=>{
+   if(i>=coords.length){
+  clearInterval(interval);
+
+  document.getElementById("eta").innerText="Arrived";
+
+  if(i >= coords.length){
+  clearInterval(interval);
+
+  document.getElementById("eta").innerText = "Arrived";
+
+  const arrivalAudio = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3");
+  arrivalAudio.play();
+
+  showToast();
+
+  // Wait 3 seconds before redirect
+  setTimeout(()=>{
+     window.location.href = "revenue-summary.html?distance=" + 
+     document.getElementById("distance").innerText;
+  }, 3000);   // 🔥 3 seconds delay
+
+  return;
+}
+  return;
+}
+    driverMarker.setLatLng(coords[i]);
+    map.panTo(coords[i]);
+
+    eta = Math.max(0, eta - 1);
+document.getElementById("eta").innerText = eta;
+
+    i +=4;
+
+  },120);
+}
+
+
+ function showToast(){
+
+  const toast = document.createElement("div");
+  toast.innerHTML = `
+    🚗 Ride Completed Successfully!<br>
+    Welcome to your Destination ✨
+  `;
+
+  toast.style.position="fixed";
+  toast.style.top="50%";
+  toast.style.left="50%";
+  toast.style.transform="translate(-50%,-50%) scale(0.6)";
+  toast.style.padding="30px 60px";
+  toast.style.borderRadius="25px";
+  toast.style.background="linear-gradient(135deg,#00ffff,#ffd700)";
+  toast.style.color="black";
+  toast.style.fontSize="22px";
+  toast.style.fontWeight="700";
+  toast.style.boxShadow="0 0 60px #00ffff";
+  toast.style.opacity="0";
+  toast.style.transition="0.4s";
+  toast.style.zIndex="9999";
+
+  document.body.appendChild(toast);
+
+  setTimeout(()=>{
+    toast.style.opacity="1";
+    toast.style.transform="translate(-50%,-50%) scale(1)";
+  },50);
+
+  setTimeout(()=>{
+    toast.style.opacity="0";
+    setTimeout(()=>toast.remove(),400);
+  },4000);
+}
+
+
+/* Rain */
+let rainInterval = null;
+let rainOn = true;
+
+function startRain(){
+  rainInterval = setInterval(()=>{
+    var rain = document.createElement("div");
+    rain.className="rain";
+    rain.style.left=Math.random()*window.innerWidth+"px";
+    document.body.appendChild(rain);
+    setTimeout(()=>rain.remove(),600);
+  },60);
+}
+
+function stopRain(){
+  clearInterval(rainInterval);
+}
+
+startRain();
+
+document.getElementById("rainToggle").addEventListener("click",function(){
+
+  if(rainOn){
+    stopRain();
+    this.innerText="☀ Normal Mode";
+    rainOn=false;
+  }else{
+    startRain();
+    this.innerText="🌧 Rain Mode ON";
+    rainOn=true;
+  }
+
+});
+let audioUnlocked = false;
+
+document.addEventListener("click", function () {
+  if (!audioUnlocked) {
+    const unlock = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3");
+    unlock.play().then(() => {
+      unlock.pause();
+      unlock.currentTime = 0;
+      audioUnlocked = true;
+      console.log("Audio Unlocked");
+    }).catch(()=>{});
+  }
+});
+
+
+// Unlock audio on first user click
+
+</script>
+
+
+
+<div id="arrivalToast" class="arrival-toast">
+  🚗 Ride Completed Successfully!
+  <br>
+  Welcome to your Destination ✨
+</div>
+
+
+</body>
+</html>

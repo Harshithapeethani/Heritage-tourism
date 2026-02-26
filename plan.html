@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Trip Planner – Heritage Tourism</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body{
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg,#e3f2fd,#f9fbe7);
+  overflow-x:hidden;
+}
+.emoji{
+  position:absolute;
+  font-size:22px;
+  animation: float 6s infinite ease-in-out;
+}
+@keyframes float{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-20px)}
+  100%{transform:translateY(0)}
+}
+.glass-card{
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  padding: 30px;
+}
+button{
+  transition: all 0.3s ease;
+}
+button:hover{
+  transform: scale(1.05);
+}
+</style>
+</head>
+
+<body>
+
+<div class="emoji" style="top:10%;left:5%">🥰</div>
+<div class="emoji" style="top:30%;right:8%">🌈🎭</div>
+<div class="emoji" style="bottom:20%;left:10%">🎒</div>
+<div class="emoji" style="bottom:15%;right:12%">🪆🎀🪄</div>
+
+<div class="container my-5">
+  <h1 class="text-center fw-bold mb-4">🧭 Trip Planner & Budget Estimator</h1>
+
+  <div class="glass-card mx-auto" style="max-width:600px">
+    <div class="mb-3">
+      <label class="form-label">🌍 Select State</label>
+      <select class="form-select" id="state"></select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">📍 Select Place</label>
+      <select class="form-select" id="place"></select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">🗓️ Number of Days</label>
+      <input type="number" id="days" class="form-control" value="2" min="1">
+    </div>
+
+    <p class="text-muted mt-2" id="preview"></p>
+
+    <button class="btn btn-success w-100 fw-bold" onclick="generatePlan()">
+      🚀 Generate Trip Plan & Budget
+    </button>
+  </div>
+
+  <div class="glass-card mt-5 d-none" id="summary">
+    <h3 class="mb-3">📌 Trip Summary</h3>
+    <p id="summaryText"></p>
+    <h4 class="text-success" id="budget"></h4>
+  </div>
+</div>
+
+<script src="data.js"></script>
+
+<script>
+const stateSelect = document.getElementById("state");
+const placeSelect = document.getElementById("place");
+
+// 1) Load states
+function loadStates() {
+  stateSelect.innerHTML = "";
+  Object.keys(STATE_DATA).forEach(st => {
+    const opt = document.createElement("option");
+    opt.value = st;
+    opt.textContent = st.charAt(0).toUpperCase() + st.slice(1);
+    stateSelect.appendChild(opt);
+  });
+}
+
+// 2) Load places
+function loadPlaces() {
+  placeSelect.innerHTML = "";
+  const state = stateSelect.value;
+  if (!STATE_DATA[state]) return;
+
+  Object.keys(STATE_DATA[state].places).forEach(pl => {
+    const opt = document.createElement("option");
+    opt.value = pl;
+    opt.textContent = pl;
+    placeSelect.appendChild(opt);
+  });
+
+  placeSelect.selectedIndex = 0;
+  updatePreview(); // ✅ FIX
+}
+
+function updatePreview() {
+  const state = stateSelect.value;
+  const place = placeSelect.value;
+  if (!STATE_DATA[state] || !STATE_DATA[state].places[place]) return;
+
+  const d = STATE_DATA[state].places[place];
+  const daily = d.hotelCost + d.guideCost + d.foodCost + d.localTravel;
+  document.getElementById("preview").innerHTML =
+    `💡 Estimated daily cost: ₹${daily}`;
+}
+
+// INITIAL LOAD  ✅ FIX
+loadStates();
+loadPlaces();
+
+// EVENTS  ✅ FIX
+stateSelect.addEventListener("change", loadPlaces);
+placeSelect.addEventListener("change", updatePreview);
+
+function capitalizeFirst(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// 3) Generate plan
+function generatePlan() {
+  const state = stateSelect.value;
+  const place = placeSelect.value;
+  const days = parseInt(document.getElementById("days").value);
+
+  if (!STATE_DATA[state] || !STATE_DATA[state].places[place]) {
+    alert("Invalid selection");
+    return;
+  }
+
+  const data = STATE_DATA[state].places[place];
+  const dayTotal = data.hotelCost + data.guideCost + data.foodCost + data.localTravel;
+  const total = dayTotal * days;
+
+  document.getElementById("summaryText").innerHTML =
+    `✨ You are planning a <b>${days}-day</b> trip to <b>${place}</b> in <b>${capitalizeFirst(state)}</b>.<br>
+     Hotel: ₹${data.hotelCost}/day<br>
+     Guide: ₹${data.guideCost}/day<br>
+     Food: ₹${data.foodCost}/day<br>
+     Local Travel: ₹${data.localTravel}/day`;
+
+  document.getElementById("budget").innerHTML =
+    `💰 Total Estimated Budget: ₹${total}`;
+
+  document.getElementById("summary").classList.remove("d-none");
+}
+</script>
+
+</body>
+</html>

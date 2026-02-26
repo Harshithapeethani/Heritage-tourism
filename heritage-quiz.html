@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Heritage Ultimate Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+body{
+margin:0;
+font-family:Segoe UI;
+background:linear-gradient(135deg,#0f172a,#1e293b);
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.quiz-container{
+width:650px;
+background:#1e293b;
+padding:30px;
+border-radius:20px;
+box-shadow:0 0 40px rgba(255,193,7,0.3);
+}
+
+h2{
+text-align:center;
+color:#ffc107;
+margin-bottom:20px;
+}
+
+.timer{
+text-align:right;
+font-weight:bold;
+color:#ff4d4d;
+}
+
+.option{
+margin:10px 0;
+padding:12px;
+border-radius:12px;
+background:#334155;
+cursor:pointer;
+transition:.3s;
+}
+
+.option:hover{
+background:#ffc107;
+color:black;
+}
+
+.result-box{
+margin-top:20px;
+text-align:center;
+}
+
+.badge{
+display:inline-block;
+padding:6px 12px;
+border-radius:20px;
+margin-top:10px;
+background:#ffc107;
+color:black;
+font-weight:bold;
+}
+
+.leaderboard{
+margin-top:20px;
+background:#0f172a;
+padding:15px;
+border-radius:15px;
+}
+
+button{
+padding:10px 20px;
+border:none;
+border-radius:20px;
+background:#ffc107;
+font-weight:bold;
+cursor:pointer;
+margin-top:15px;
+}
+
+
+/* ===== PROGRESS BAR ===== */
+.progress-container{
+width:100%;
+height:10px;
+background:#334155;
+border-radius:20px;
+margin:15px 0;
+overflow:hidden;
+}
+
+.progress-fill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#ffc107,#ff9800);
+transition:width 1s ease;
+}
+
+/* ===== GLOBAL LEADERBOARD ===== */
+.global-board{
+margin-top:20px;
+background:#0f172a;
+padding:15px;
+border-radius:15px;
+max-height:220px;
+overflow-y:auto;
+}
+
+.rank-item{
+display:flex;
+justify-content:space-between;
+padding:6px 10px;
+border-radius:10px;
+transition:.4s;
+}
+
+.rank-item:hover{
+background:rgba(255,193,7,0.2);
+}
+
+.you-rank{
+background:rgba(255,193,7,0.3);
+font-weight:bold;
+}
+
+.top1{
+color:gold;
+font-weight:bold;
+}
+
+.top3{
+color:#ffc107;
+}
+</style>
+</head>
+<body>
+
+<div class="quiz-container">
+<h2>🏛 Heritage Quiz Challenge</h2>
+
+<div class="timer">Time Left: <span id="time">30</span>s</div>
+
+<h4 id="question"></h4>
+
+<div id="options"></div>
+
+<div class="result-box" id="result"></div>
+
+<div class="global-board">
+<h4>🌍 Global Ranking</h4>
+<div id="globalList"></div>
+</div>
+</div>
+
+<script>
+
+const questions=[
+{
+q:"Charminar is located in?",
+options:["Delhi","Hyderabad","Chennai","Mysore"],
+answer:1
+},
+{
+q:"Ramappa Temple belongs to which dynasty?",
+options:["Mughal","Chola","Kakatiya","Maurya"],
+answer:2
+},
+{
+q:"Hampi was capital of?",
+options:["Chola","Vijayanagara","Gupta","Pandya"],
+answer:1
+},
+{
+q:"Golconda Fort famous for?",
+options:["Acoustic System","Snow","Beach","Tea"],
+answer:0
+},
+{
+q:"Mysore Palace located in?",
+options:["Kerala","Tamil Nadu","Karnataka","Goa"],
+answer:2
+}
+];
+
+let current=0;
+let score=0;
+let timeLeft=30;
+let timer;
+
+const qBox=document.getElementById("question");
+const optBox=document.getElementById("options");
+const resultBox=document.getElementById("result");
+
+function startTimer(){
+timer=setInterval(()=>{
+timeLeft--;
+document.getElementById("time").innerText=timeLeft;
+
+if(timeLeft<=0){
+clearInterval(timer);
+finishQuiz();
+}
+},1000);
+}
+
+function loadQuestion(){
+if(current>=questions.length){
+finishQuiz();
+return;
+}
+
+qBox.innerText=questions[current].q;
+optBox.innerHTML="";
+
+questions[current].options.forEach((opt,index)=>{
+optBox.innerHTML+=
+`<div class="option" onclick="checkAnswer(${index})">${opt}</div>`;
+});
+}
+
+function checkAnswer(index){
+if(index===questions[current].answer){
+score++;
+}
+current++;
+loadQuestion();
+}
+
+function finishQuiz(){
+clearInterval(timer);
+optBox.innerHTML="";
+qBox.innerHTML="Quiz Finished 🎉";
+
+let badge="";
+let coupon="";
+
+if(score>=4){
+badge="🏆 Heritage Master";
+coupon="Use code MASTER20 for 20% OFF";
+confetti({particleCount:200,spread:120});
+}
+else if(score>=3){
+badge="🥇 Explorer Badge";
+coupon="Use code EXP10 for 10% OFF";
+}
+else{
+badge="📘 Beginner";
+}
+
+
+let percent = (score/questions.length)*100;
+
+resultBox.innerHTML=`
+<h3>Your Score: ${score}/${questions.length}</h3>
+
+<div class="progress-container">
+<div class="progress-fill" id="progressBar"></div>
+</div>
+
+<div class="badge">${badge}</div>
+<p style="margin-top:10px;color:#00ffcc;">${coupon}</p>
+<button onclick="restart()">Play Again</button>
+`;
+setTimeout(()=>{
+document.getElementById("progressBar").style.width = percent + "%";
+},200);
+
+updateLeaderboard();
+}
+
+function restart(){
+current=0;
+score=0;
+timeLeft=30;
+resultBox.innerHTML="";
+document.getElementById("time").innerText=30;
+loadQuestion();
+startTimer();
+}
+
+
+let globalPlayers=[
+{name:"Rahul",score:4},
+{name:"Sneha",score:3},
+{name:"Arjun",score:5},
+{name:"Meghana",score:2},
+{name:"Karthik",score:4},
+{name:"Priya",score:3},
+{name:"Rohan",score:5}
+];
+
+function updateLeaderboard(){
+
+globalPlayers.push({name:"You",score:score});
+
+globalPlayers.sort((a,b)=>b.score-a.score);
+
+let container=document.getElementById("globalList");
+container.innerHTML="";
+
+globalPlayers.forEach((player,index)=>{
+
+let rank=index+1;
+let className="rank-item";
+
+if(player.name==="You"){
+className+=" you-rank";
+}
+
+if(rank===1){
+className+=" top1";
+}
+else if(rank<=3){
+className+=" top3";
+}
+
+container.innerHTML+=`
+<div class="${className}">
+<span>#${rank} ${player.name}</span>
+<span>${player.score}</span>
+</div>
+`;
+
+});
+
+}
+
+loadQuestion();
+startTimer();
+
+</script>
+
+</body>
+</html>

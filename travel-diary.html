@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Travel Diary Cinematic Edition</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* ================= ROOT VARIABLES ================= */
+
+:root{
+  --bg: linear-gradient(135deg,#f8f9ff,#eef1ff);
+  --card:#ffffff;
+  --text:#1e1e2f;
+  --accent:#6c63ff;
+  --glass:rgba(255,255,255,0.7);
+}
+
+/* ================= BODY ================= */
+
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:0.6s ease;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:40px 15px;
+}
+
+/* ================= HEADER ================= */
+
+h1{
+  font-size:38px;
+  font-weight:700;
+  margin-bottom:25px;
+  letter-spacing:1px;
+}
+
+/* ================= THEME SWITCHER ================= */
+
+.theme-switcher{
+  display:flex;
+  gap:10px;
+  margin-bottom:30px;
+}
+
+.theme-btn{
+  padding:8px 18px;
+  border-radius:20px;
+  border:none;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:600;
+  background:var(--accent);
+  color:white;
+  transition:0.3s;
+}
+
+.theme-btn:hover{
+  transform:scale(1.08);
+}
+
+/* ================= MAIN CARD ================= */
+
+.diary-card{
+  width:950px;
+  max-width:95%;
+  padding:40px;
+  border-radius:35px;
+  background:var(--glass);
+  backdrop-filter:blur(20px);
+  box-shadow:0 40px 100px rgba(0,0,0,0.1);
+  transition:0.5s;
+}
+
+/* ================= TEXTAREA ================= */
+
+textarea{
+  width:100%;
+  height:120px;
+  border-radius:20px;
+  padding:20px;
+  border:1px solid #ddd;
+  font-size:15px;
+  margin-bottom:20px;
+  resize:none;
+}
+
+/* ================= MOODS ================= */
+
+.moods{
+  display:flex;
+  justify-content:center;
+  gap:25px;
+  margin-bottom:20px;
+}
+
+.moods span{
+  font-size:30px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.moods span.active{
+  transform:scale(1.5);
+  filter:drop-shadow(0 0 15px var(--accent));
+}
+
+/* ================= INPUT ================= */
+
+input{
+  width:100%;
+  padding:12px;
+  border-radius:15px;
+  border:1px solid #ddd;
+  margin-bottom:15px;
+}
+
+/* ================= SAVE BUTTON ================= */
+
+.save-btn{
+  padding:14px 40px;
+  border:none;
+  border-radius:30px;
+  background:var(--accent);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.save-btn:hover{
+  transform:scale(1.05);
+}
+
+/* ================= ENTRIES ================= */
+
+.entries{
+  width:950px;
+  max-width:95%;
+  margin-top:50px;
+}
+
+.entry{
+  display:grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap:30px;
+  align-items:center;
+  background:var(--card);
+  padding:30px;
+  border-radius:30px;
+  margin-bottom:25px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.08);
+}
+
+.entry:hover{
+  transform:translateY(-5px);
+}
+
+.meta{
+  font-size:13px;
+  opacity:0.6;
+  margin-bottom:10px;
+}
+
+.location{
+  font-size:12px;
+  background:var(--accent);
+  color:white;
+  display:inline-block;
+  padding:6px 14px;
+  border-radius:15px;
+  margin-top:10px;
+}
+
+/* IMAGE CARD STYLE */
+.images{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:15px;
+  margin-top:15px;
+}
+
+.images img{
+  width:100%;
+  height:180px;        /* FIXED HEIGHT */
+  object-fit:cover;    /* CROPS BEAUTIFULLY */
+  border-radius:20px;
+  transition:0.4s;
+  box-shadow:0 15px 40px rgba(0,0,0,0.1);
+}
+
+.images img:hover{
+  transform:scale(1.05);
+}
+
+/* ================= STICKER CARD ================= */
+
+.sticker{
+  margin-top:15px;
+  padding:15px;
+  border-radius:20px;
+  background:linear-gradient(135deg,var(--accent),#ffb703);
+  color:white;
+  font-weight:600;
+  text-align:center;
+  font-size:14px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.2);
+}
+
+/* ================= DARK THEME ================= */
+
+body.dark{
+  --bg: linear-gradient(135deg,#1e1e2f,#12121c);
+  --card:#1f1f2e;
+  --text:#ffffff;
+  --accent:#00c9ff;
+  --glass:rgba(40,40,60,0.8);
+}
+
+/* ================= ROYAL THEME ================= */
+
+body.royal{
+  --bg: linear-gradient(135deg,#3a0ca3,#7209b7,#f72585);
+  --card:rgba(255,255,255,0.12);
+  --text:#ffffff;
+  --accent:#ffd60a;
+  --glass:rgba(255,255,255,0.15);
+}
+
+/* STICKER PREVIEW CARD */
+.sticker-preview{
+  margin-top:25px;
+  padding:20px;
+  border-radius:25px;
+  background:linear-gradient(135deg,#ff6b6b,#ffd93d);
+  color:white;
+  font-weight:700;
+  text-align:center;
+  font-size:16px;
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.25),
+    0 0 30px rgba(255,255,255,0.3);
+  animation:popSticker 0.4s ease;
+}
+
+@keyframes popSticker{
+  from{transform:scale(0.7);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
+
+
+</style>
+</head>
+
+<body>
+
+<h1>Travel Diary Cinematic Edition</h1>
+
+<div class="theme-switcher">
+  <button class="theme-btn" onclick="setTheme('light')">Light</button>
+  <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
+  <button class="theme-btn" onclick="setTheme('royal')">Royal</button>
+</div>
+
+<div class="diary-card">
+
+<textarea id="experience" placeholder="Write your travel memory..."></textarea>
+
+<div class="moods">
+  <span onclick="selectMood(this)">😊</span>
+  <span onclick="selectMood(this)">🌊</span>
+  <span onclick="selectMood(this)">🌄</span>
+  <span onclick="selectMood(this)">✨</span>
+  <span onclick="selectMood(this)">💖</span>
+</div>
+
+<input id="tagInput" placeholder="Tags (Beach, Temple, Food)">
+<input type="file" id="images" multiple>
+
+<br>
+<button class="save-btn" onclick="saveEntry()">Save Entry</button>
+<div id="stickerPreview" class="sticker-preview" style="display:none;"></div>
+</div>
+
+<div class="entries" id="entries"></div>
+
+<script>
+
+let selectedMood="";
+
+function selectMood(el){
+  document.querySelectorAll(".moods span").forEach(e=>e.classList.remove("active"));
+  el.classList.add("active");
+  selectedMood = el.innerText;
+}
+
+/* LOCATION */
+function getLocation(){
+  return new Promise(resolve=>{
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(pos=>{
+        resolve("Lat: "+pos.coords.latitude.toFixed(2)+
+                ", Lng: "+pos.coords.longitude.toFixed(2));
+      },()=>resolve("Location unavailable"));
+    }else{
+      resolve("Location not supported");
+    }
+  });
+}
+
+/* SAVE ENTRY */
+async function saveEntry(){
+  const text=document.getElementById("experience").value;
+  const tags=document.getElementById("tagInput").value;
+  const files=document.getElementById("images").files;
+
+  if(!text) return alert("Write something first!");
+
+  const images=[];
+  for(let file of files){
+    const reader=new FileReader();
+    const data=await new Promise(res=>{
+      reader.onload=()=>res(reader.result);
+      reader.readAsDataURL(file);
+    });
+    images.push(data);
+  }
+
+  const location=await getLocation();
+
+  const entries=JSON.parse(localStorage.getItem("cinemaDiary"))||[];
+
+  entries.push({
+    text,
+    mood:selectedMood,
+    tags,
+    images,
+    location,
+    date:new Date().toLocaleString()
+  });
+
+  localStorage.setItem("cinemaDiary",JSON.stringify(entries));
+
+  document.getElementById("experience").value="";
+  document.getElementById("tagInput").value="";
+  document.getElementById("images").value="";
+  selectedMood="";
+generateSticker(text, selectedMood, tags);
+  loadEntries();
+}
+
+function generateSticker(text, mood, tags){
+
+  const stickerBox = document.getElementById("stickerPreview");
+
+  const shortText = text.length > 40 ? text.substring(0,40)+"..." : text;
+
+  stickerBox.innerHTML = `
+    🎟 Travel Memory Sticker <br><br>
+    ${mood || ""} ${shortText} <br>
+    #${tags} ✨
+  `;
+
+  stickerBox.style.display="block";
+
+  setTimeout(()=>{
+    stickerBox.style.display="none";
+  },5000);
+}
+/* LOAD ENTRIES */
+function loadEntries(){
+  const entries=JSON.parse(localStorage.getItem("cinemaDiary"))||[];
+  const container=document.getElementById("entries");
+  container.innerHTML="";
+
+  entries.reverse().forEach(entry=>{
+
+    const stickerText = `${entry.mood || ""} ${entry.tags} ✨`;
+
+    container.innerHTML += `
+  <div class="entry">
+    <div class="entry-left">
+      <h3>${entry.mood || ""} ${entry.text}</h3>
+      <div class="meta">${entry.date}</div>
+      <div class="location">📍 ${entry.location}</div>
+      <div># ${entry.tags}</div>
+      <div class="sticker">🎟 ${entry.tags}</div>
+    </div>
+
+    <div class="images">
+      ${entry.images.map(img=>`<img src="${img}">`).join("")}
+    </div>
+  </div>
+`;
+  });
+}
+
+loadEntries();
+
+/* THEME SYSTEM */
+
+function setTheme(theme){
+  document.body.classList.remove("dark","royal");
+  if(theme==="dark") document.body.classList.add("dark");
+  if(theme==="royal") document.body.classList.add("royal");
+  localStorage.setItem("cinemaTheme",theme);
+}
+
+/* AUTO THEME */
+function autoTheme(){
+  const hour=new Date().getHours();
+  if(hour>=7 && hour<=18){
+    setTheme("light");
+  }else{
+    setTheme("dark");
+  }
+}
+
+const savedTheme=localStorage.getItem("cinemaTheme");
+if(savedTheme){
+  setTheme(savedTheme);
+}else{
+  autoTheme();
+}
+
+</script>
+
+</body>
+</html>

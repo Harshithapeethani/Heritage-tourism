@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Royal Time Travel Experience</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  font-family:'Cinzel', serif;
+  background:black;
+  color:white;
+}
+
+/* Background */
+.bg{
+  position:fixed;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-1;
+  transition:opacity 0.8s ease-in-out;
+  filter:brightness(60%);
+  animation:zoom 25s infinite alternate;
+}
+
+@keyframes zoom{
+  from{transform:scale(1);}
+  to{transform:scale(1.1);}
+}
+
+/* Overlay */
+.overlay{
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:linear-gradient(to top,rgba(0,0,0,.85),rgba(0,0,0,.4));
+}
+
+/* Content */
+.content{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  width:80%;
+}
+
+.year{
+  font-size:80px;
+  margin-bottom:20px;
+  text-shadow:0 0 30px gold;
+  animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+  from{text-shadow:0 0 15px gold;}
+  to{text-shadow:0 0 50px gold;}
+}
+
+.description{
+  font-size:22px;
+  max-width:900px;
+  margin:auto;
+  line-height:1.7;
+  min-height:120px;
+}
+
+.monument{
+  font-size:18px;
+  margin-top:15px;
+  opacity:.8;
+  letter-spacing:2px;
+}
+
+/* Slider */
+.slider-container{
+  position:absolute;
+  bottom:8%;
+  width:100%;
+  text-align:center;
+}
+
+input[type=range]{
+  width:70%;
+  cursor:pointer;
+}
+
+/* Floating particles */
+.particle{
+  position:absolute;
+  width:4px;
+  height:4px;
+  background:rgb(0, 0, 0);
+  border-radius:50%;
+  opacity:.7;
+  animation:float 8s linear infinite;
+}
+
+@keyframes float{
+  from{transform:translateY(100vh);}
+  to{transform:translateY(-10vh);}
+}
+
+.fade-out{opacity:0;}
+.fade-in{opacity:1;}
+</style>
+</head>
+<body>
+
+<img id="background" class="bg fade-in" src="images/charminar.jpg">
+<div class="overlay"></div>
+
+<div class="content">
+  <div class="year" id="yearDisplay">1500</div>
+  <div class="description" id="eraText">
+    🕌 Qutb Shahi Dynasty – Charminar and Golconda shine.
+  </div>
+  <div class="monument" id="monumentName">CHARMINAR</div>
+</div>
+
+<div class="slider-container">
+  <input type="range" min="1200" max="2020" value="1500" id="yearSlider">
+</div>
+
+<audio id="tickSound" src="audio/tick.mp3"></audio>
+
+<script>
+const yearSlider=document.getElementById("yearSlider");
+const yearDisplay=document.getElementById("yearDisplay");
+const eraText=document.getElementById("eraText");
+const monumentName=document.getElementById("monumentName");
+const background=document.getElementById("background");
+const tick=document.getElementById("tickSound");
+
+/* Floating particles */
+for(let i=0;i<40;i++){
+  const p=document.createElement("div");
+  p.className="particle";
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDuration=(5+Math.random()*5)+"s";
+  document.body.appendChild(p);
+}
+
+function changeBackground(newImage){
+  background.classList.remove("fade-in");
+  background.classList.add("fade-out");
+
+  setTimeout(()=>{
+    background.src=newImage;
+    background.classList.remove("fade-out");
+    background.classList.add("fade-in");
+  },400);
+}
+
+function updateEra(year){
+  yearDisplay.innerHTML=year;
+  tick.play();
+
+  if(year<1300){
+    eraText.innerHTML="🏰 Early Kakatiya Empire – Forts and temples rise.";
+    monumentName.innerHTML="WARANGAL FORT";
+    changeBackground("images/kakatiya.jpg");
+  }
+  else if(year<1450){
+    eraText.innerHTML="🛕 Ramappa Temple – Architectural brilliance flourishes.";
+    monumentName.innerHTML="RAMAPPA TEMPLE";
+    changeBackground("images/ramappa time.jpg");
+  }
+  else if(year<1650){
+    eraText.innerHTML="🕌 Qutb Shahi Dynasty – Charminar & Golconda glow.";
+    monumentName.innerHTML="CHARMINAR";
+    changeBackground("images/charminar.jpg");
+  }
+  else if(year<1750){
+    eraText.innerHTML="🏰 Golconda Fort – Diamond trade & mighty defenses.";
+    monumentName.innerHTML="GOLCONDA FORT";
+    changeBackground("images/golconda time.jpg");
+  }
+  else if(year<1850){
+    eraText.innerHTML="👑 Nizam Era – Royal palaces & courts flourish.";
+    monumentName.innerHTML="CHOWMAHALLA PALACE";
+    changeBackground("images/nizam.jpg");
+  }
+  else if(year<1950){
+    eraText.innerHTML="🏛 British Colonial Period – New governance emerges.";
+    monumentName.innerHTML="COLONIAL ARCHITECTURE";
+    changeBackground("images/british.jpg");
+  }
+  else{
+    eraText.innerHTML="🌆 Modern India – Heritage meets innovation.";
+    monumentName.innerHTML="MODERN HYDERABAD";
+    changeBackground("images/modern.jpg");
+  }
+}
+
+yearSlider.addEventListener("input",function(){
+  updateEra(this.value);
+});
+</script>
+
+</body>
+</html>
