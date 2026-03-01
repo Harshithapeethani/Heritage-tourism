@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AI Safety Shield</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:#0e0e0e;
+  color:white;
+  text-align:center;
+  overflow-x:hidden;
+  transition:0.3s;
+}
+
+/* Header */
+.header{
+  padding:18px;
+  font-size:20px;
+  font-weight:600;
+  background:#141414;
+  border-bottom:1px solid #222;
+}
+
+/* Premium Card */
+.card-box{
+  background:#181818;
+  margin:15px;
+  padding:18px;
+  border-radius:14px;
+  box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+/* SOS Button */
+.sos-btn{
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:linear-gradient(145deg,#ff1a1a,#8b0000);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:30px auto;
+  font-size:30px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+.sos-btn:hover{
+  transform:scale(1.05);
+}
+
+/* Emergency flash */
+.flash{
+  animation:flashScreen 0.4s infinite;
+}
+@keyframes flashScreen{
+  0%{background:#0e0e0e;}
+  50%{background:#660000;}
+  100%{background:#0e0e0e;}
+}
+
+/* Stealth Mode */
+.stealth{
+  background:black !important;
+}
+.stealth *{
+  opacity:0;
+}
+
+video{
+  width:100%;
+  border-radius:12px;
+}
+
+.small-text{
+  font-size:13px;
+  color:#aaa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+🛡 AI Safety Shield
+</div>
+
+<div class="sos-btn" onclick="triggerSOS()">
+SOS
+</div>
+
+<div id="status"></div>
+
+<div class="card-box">
+<h6>🌙 Smart Night Protection</h6>
+<div id="nightStatus"></div>
+</div>
+
+<div class="card-box">
+<h6>📍 Live Location</h6>
+<button class="btn btn-outline-light btn-sm" onclick="getLocation()">Get Location</button>
+<div id="locationResult" class="small-text mt-2"></div>
+</div>
+
+<div class="card-box">
+<h6>📷 Emergency Camera</h6>
+<video id="camera" autoplay muted></video>
+<button class="btn btn-outline-info btn-sm mt-2" onclick="startCamera()">Activate Camera</button>
+</div>
+
+<div class="card-box">
+<h6>🎙 Voice Activation</h6>
+<button class="btn btn-outline-warning btn-sm" onclick="startVoice()">Start Listening</button>
+<div class="small-text mt-2">Say: "Help me"</div>
+</div>
+
+<div class="card-box">
+<h6>🕵 Secret Stealth Mode</h6>
+<button class="btn btn-outline-secondary btn-sm" onclick="activateStealth()">Activate for 5 sec</button>
+</div>
+
+<button class="btn btn-success mt-3" onclick="stopAlarm()">Stop Alarm</button>
+<br><br>
+<button class="btn btn-light btn-sm" onclick="goBack()">⬅ Back</button>
+
+<audio id="alarmSound" loop>
+<source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg">
+</audio>
+
+<script>
+
+let tapCount=0;
+let lastTap=0;
+
+/* HIDDEN TRIPLE TAP ACTIVATION */
+document.body.addEventListener("click",function(){
+  const now=new Date().getTime();
+  if(now-lastTap<400){
+    tapCount++;
+  }else{
+    tapCount=1;
+  }
+  lastTap=now;
+
+  if(tapCount===3){
+    silentSOS();
+    tapCount=0;
+  }
+});
+
+/* Silent SOS */
+function silentSOS(){
+  document.getElementById("status").innerHTML=
+  "🔴 Silent Emergency Activated";
+  document.body.classList.add("flash");
+  document.getElementById("alarmSound").play();
+}
+
+/* Normal SOS */
+function triggerSOS(){
+  document.body.classList.add("flash");
+  document.getElementById("alarmSound").play();
+  document.getElementById("status").innerHTML=
+  "🚨 Emergency Alert Triggered";
+}
+
+/* Stop */
+function stopAlarm(){
+  document.body.classList.remove("flash");
+  document.getElementById("alarmSound").pause();
+  document.getElementById("alarmSound").currentTime=0;
+  document.getElementById("status").innerHTML="";
+}
+
+/* Night Detection */
+function checkNight(){
+  const hour=new Date().getHours();
+  if(hour>=19 || hour<=5){
+    document.getElementById("nightStatus").innerHTML=
+    "Night detected. Extra monitoring enabled.";
+  }else{
+    document.getElementById("nightStatus").innerHTML=
+    "Daytime monitoring active.";
+  }
+}
+checkNight();
+
+/* Camera */
+function startCamera(){
+  navigator.mediaDevices.getUserMedia({video:true})
+  .then(stream=>{
+    document.getElementById("camera").srcObject=stream;
+  });
+}
+
+/* Location */
+function getLocation(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos=>{
+      document.getElementById("locationResult").innerHTML=
+      "Lat: "+pos.coords.latitude+
+      " | Long: "+pos.coords.longitude;
+    });
+  }
+}
+
+/* Voice Detection */
+function startVoice(){
+  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const recognition=new SpeechRecognition();
+  recognition.lang="en-US";
+  recognition.start();
+
+  recognition.onresult=function(event){
+    const speech=event.results[0][0].transcript.toLowerCase();
+    if(speech.includes("help")){
+      triggerSOS();
+    }
+  }
+}
+
+/* Stealth */
+function activateStealth(){
+  document.body.classList.add("stealth");
+  setTimeout(()=>{
+    document.body.classList.remove("stealth");
+  },5000);
+}
+
+function goBack(){
+  window.location.href="plan.html";
+}
+
+</script>
+
+</body>
+</html>
